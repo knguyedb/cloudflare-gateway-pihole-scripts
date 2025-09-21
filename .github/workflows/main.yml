@@ -1,8 +1,9 @@
+---
 name: Update Filter Lists
 
 on:
   schedule:
-    - cron: "0 21 * * *"  # 21:00 UTC = 04:00 GMT+7 hàng ngày
+    - cron: "0 21 * * *"
   push:
     branches:
       - main
@@ -72,13 +73,16 @@ jobs:
         run: |
           TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
           MESSAGE="✅ *Cloudflare Gateway Update Succeeded*%0A\
-📄 *Workflow*: ${{ github.workflow }}%0A\
-📦 *Repository*: ${{ github.repository }}%0A\
-🌿 *Branch*: ${{ github.ref_name }}%0A\
-🕒 *Time*: $TIME%0A\
-🔗 [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+          📄 *Workflow*: ${{ github.workflow }}%0A\
+          📦 *Repository*: ${{ github.repository }}%0A\
+          🌿 *Branch*: ${{ github.ref_name }}%0A\
+          🕒 *Time*: $TIME%0A\
+          🔗 [View Commit](https://github.com/${{ github.repository }}/commit/\
+          ${{ github.sha }})"
 
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+          curl -s -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/\
+            sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d parse_mode=Markdown \
             -d text="$MESSAGE"
@@ -88,14 +92,17 @@ jobs:
         run: |
           TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
           MESSAGE="❌ *Cloudflare Gateway Update Failed*%0A\
-📄 *Workflow*: ${{ github.workflow }}%0A\
-📦 *Repository*: ${{ github.repository }}%0A\
-🌿 *Branch*: ${{ github.ref_name }}%0A\
-🕒 *Time*: $TIME%0A\
-🚨 *Check logs in GitHub Actions!*%0A\
-🔗 [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          📄 *Workflow*: ${{ github.workflow }}%0A\
+          📦 *Repository*: ${{ github.repository }}%0A\
+          🌿 *Branch*: ${{ github.ref_name }}%0A\
+          🕒 *Time*: $TIME%0A\
+          🚨 *Check logs in GitHub Actions!*%0A\
+          🔗 [View Logs](https://github.com/${{ github.repository }}/actions/\
+          runs/${{ github.run_id }})"
 
-          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+          curl -s -X POST \
+            https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/\
+            sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d parse_mode=Markdown \
             -d text="$MESSAGE"
