@@ -71,7 +71,7 @@ jobs:
       - name: Notify Telegram - SUCCESS
         if: success()
         run: |
-          TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%d/%m/%Y %H:%M:%S')
           MESSAGE="✅ *Cloudflare Gateway Update Succeeded*%0A\
           📄 *Workflow*: ${{ github.workflow }}%0A\
           📦 *Repository*: ${{ github.repository }}%0A\
@@ -89,7 +89,7 @@ jobs:
       - name: Notify Telegram - FAILURE
         if: failure()
         run: |
-          TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
+          TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%d/%m/%Y %H:%M:%S')
           MESSAGE="❌ *Cloudflare Gateway Update Failed*%0A\
           📄 *Workflow*: ${{ github.workflow }}%0A\
           📦 *Repository*: ${{ github.repository }}%0A\
