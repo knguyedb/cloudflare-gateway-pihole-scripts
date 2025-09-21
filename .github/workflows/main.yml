@@ -2,7 +2,7 @@ name: Update Filter Lists
 
 on:
   schedule:
-    - cron: "0 3 * * 1"
+    - cron: "0 21 * * *"  # 21:00 UTC = 04:00 GMT+7 hàng ngày
   push:
     branches:
       - main
@@ -66,6 +66,37 @@ jobs:
           curl "${{ env.PING_URL }}"
         env:
           PING_URL: ${{ secrets.PING_URL }}
+
+      - name: Notify Telegram - SUCCESS
+        if: success()
+        run: |
+          MESSAGE="✅ *Cloudflare Gateway Update Succeeded*%0A\
+📄 *Workflow*: ${{ github.workflow }}%0A\
+📦 *Repository*: ${{ github.repository }}%0A\
+🌿 *Branch*: ${{ github.ref_name }}%0A\
+🕒 *Time*: $(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')%0A\
+🔗 [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d parse_mode=Markdown \
+            -d text="$MESSAGE"
+
+      - name: Notify Telegram - FAILURE
+        if: failure()
+        run: |
+          MESSAGE="❌ *Cloudflare Gateway Update Failed*%0A\
+📄 *Workflow*: ${{ github.workflow }}%0A\
+📦 *Repository*: ${{ github.repository }}%0A\
+🌿 *Branch*: ${{ github.ref_name }}%0A\
+🕒 *Time*: $(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')%0A\
+🚨 *Check logs in GitHub Actions!*%0A\
+🔗 [View Logs](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d parse_mode=Markdown \
+            -d text="$MESSAGE"
 
   keepalive:
     if: github.event_name == 'schedule'
