@@ -67,7 +67,7 @@ jobs:
         env:
           PING_URL: ${{ secrets.PING_URL }}
 
-            - name: Notify Telegram - SUCCESS
+      - name: Notify Telegram - SUCCESS
         if: success()
         run: |
           TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
@@ -77,12 +77,13 @@ jobs:
 🌿 *Branch*: ${{ github.ref_name }}%0A\
 🕒 *Time*: $TIME%0A\
 🔗 [View Commit](https://github.com/${{ github.repository }}/commit/${{ github.sha }})"
+
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d parse_mode=Markdown \
             -d text="$MESSAGE"
 
-            - name: Notify Telegram - FAILURE
+      - name: Notify Telegram - FAILURE
         if: failure()
         run: |
           TIME=$(TZ='Asia/Ho_Chi_Minh' date '+%Y-%m-%d %H:%M:%S')
@@ -98,7 +99,6 @@ jobs:
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d parse_mode=Markdown \
             -d text="$MESSAGE"
-
 
   keepalive:
     if: github.event_name == 'schedule'
